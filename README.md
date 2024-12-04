@@ -18,6 +18,8 @@ Features
 
 -   📦 Nested navigation structure support
 
+-   🧪 Comprehensive test coverage with Vitest
+
 Tech Stack
 ----------
 
@@ -35,6 +37,8 @@ Tech Stack
 
 -   Zod for validation
 
+-   Vitest + Testing Library
+
 Getting Started
 ---------------
 
@@ -49,6 +53,12 @@ npm dev
 -   Build for production:
 
 npm build
+
+-   Testing:
+
+npm test        # Run tests in watch mode
+npm test:ui     # Run tests with UI
+npm coverage    # Generate coverage report
 
 Open http://localhost:3000 with your browser to see the result.
 

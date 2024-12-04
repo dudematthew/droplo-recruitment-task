@@ -66,6 +66,7 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
         <form 
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-6"
+          role="form"
           noValidate
         >
           <Controller
