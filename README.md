@@ -124,22 +124,3 @@ License
 -------
 
 This project is open source and available under the MIT License.
-
-## Configuration
-
-The application supports the following environment variables:
-
-- `NEXT_PUBLIC_DISABLE_MAX_NESTING`: Set to 'true' to remove the nesting level limit
-- `NEXT_PUBLIC_DISABLE_EASTER_EGGS`: Set to 'true' to disable easter egg
-- `NEXT_PUBLIC_USE_MOCK_DATA`: Set to 'false' to start with empty navigation
-
-Environment files:
-- `.env` - Default configuration
-- `.env.local` - Local overrides (not committed to repository)
-- `.env.example` - Example configuration with documentation
-
-Example configuration:
-
-NEXT_PUBLIC_DISABLE_MAX_NESTING=true
-NEXT_PUBLIC_DISABLE_EASTER_EGGS=true
-NEXT_PUBLIC_USE_MOCK_DATA=false
