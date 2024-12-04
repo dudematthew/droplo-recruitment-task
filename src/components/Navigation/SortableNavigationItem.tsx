@@ -53,7 +53,6 @@ export function SortableNavigationItem({
   };
 
   const handleDeleteClick = () => {
-    console.log('Delete clicked for item:', item);
     onDelete(item.id);
   };
 
@@ -104,7 +103,7 @@ export function SortableNavigationItem({
             onClick={handleDeleteClick}
             className="border-gray-200 hover:bg-gray-50 px-4 py-2 border-r text-gray-600 text-sm"
           >
-            Delete
+            Usuń
           </button>
           <button
             onClick={() => {
@@ -113,13 +112,13 @@ export function SortableNavigationItem({
             }}
             className="border-gray-200 hover:bg-gray-50 px-4 py-2 border-r text-gray-600 text-sm"
           >
-            Edit
+            Edytuj
           </button>
           <button
             onClick={() => setIsAddingSubItem(true)}
             className="flex items-center gap-2 hover:bg-gray-50 px-4 py-2 text-gray-600 text-sm"
           >
-            Add menu item
+            Dodaj pozycję menu
           </button>
         </div>
       </div>

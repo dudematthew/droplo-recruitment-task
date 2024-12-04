@@ -72,8 +72,8 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
             control={control}
             render={({ field }) => (
               <Input
-                label="Name"
-                placeholder="e.g. Products"
+                label="Nazwa"
+                placeholder="np. Promocje"
                 type="text"
                 {...field}
                 error={isDirty && touchedFields.title ? errors.title?.message : undefined}
@@ -86,8 +86,8 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
             control={control}
             render={({ field }) => (
               <Input
-                label="URL"
-                placeholder="Paste or search"
+                label="Link"
+                placeholder="Wklej lub wyszukaj"
                 type="url"
                 {...field}
                 error={isDirty && touchedFields.url ? errors.url?.message : undefined}
@@ -102,7 +102,7 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
                 variant="secondary"
                 onClick={onCancel}
               >
-                Cancel
+                Anuluj
               </Button>
             )}
             <Button 
@@ -110,7 +110,7 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
               variant="outline"
               disabled={isSubmitting}
             >
-              {initialData ? 'Save changes' : 'Add to menu'}
+              {initialData ? 'Zapisz zmiany' : 'Dodaj'}
             </Button>
           </div>
         </form>

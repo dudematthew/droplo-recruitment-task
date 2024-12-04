@@ -135,7 +135,7 @@ export function NavigationList({
               variant="secondary"
               onClick={() => setIsAddingItem(true)}
             >
-              Add menu item
+              Dodaj pozycję menu
             </Button>
           </div>
         )}
