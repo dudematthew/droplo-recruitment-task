@@ -44,17 +44,18 @@ export default function Home() {
   };
 
   const handleDelete = (id: string) => {
+    console.log('Attempting to delete item with ID:', id);
+    
     const removeItem = (items: NavigationItem[]): NavigationItem[] => {
       return items.map(item => {
-        if (item.children) {
-          const filteredChildren = removeItem(item.children);
+        if (item.children?.length) {
           return {
             ...item,
-            children: filteredChildren
+            children: removeItem(item.children).filter(child => child.id === id ? false : true)
           };
         }
         return item;
-      }).filter(item => item.id !== id);
+      }).filter(item => item.id === id ? false : true);
     };
 
     setItems(removeItem(items));

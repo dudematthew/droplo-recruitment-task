@@ -11,7 +11,7 @@ interface SortableNavigationItemProps {
   item: NavigationItem;
   onEditStart: (item: NavigationItem) => void;
   onEditSubmit: (item: NavigationItem) => void;
-  onDelete: () => void;
+  onDelete: (id: string) => void;
   onAddSubItem: (parentId: string, newItem: Omit<NavigationItem, 'id'>) => void;
   isActive: boolean;
   level?: number;
@@ -42,7 +42,7 @@ export function SortableNavigationItem({
     transition,
   };
 
-  const handleAddSubItem = (formData: { title: string; url: string }) => {
+  const handleAddSubItem = (formData: NavigationFormData) => {
     onAddSubItem(item.id, formData);
     setIsAddingSubItem(false);
   };
@@ -50,6 +50,11 @@ export function SortableNavigationItem({
   const handleEditSubmit = (formData: NavigationFormData) => {
     onEditSubmit({ ...item, ...formData });
     setIsEditing(false);
+  };
+
+  const handleDeleteClick = () => {
+    console.log('Delete clicked for item:', item);
+    onDelete(item.id);
   };
 
   if (isEditing) {
@@ -96,7 +101,7 @@ export function SortableNavigationItem({
         </div>
         <div className="flex border-gray-200 border rounded-lg overflow-hidden">
           <button
-            onClick={onDelete}
+            onClick={handleDeleteClick}
             className="border-gray-200 hover:bg-gray-50 px-4 py-2 border-r text-gray-600 text-sm"
           >
             Delete

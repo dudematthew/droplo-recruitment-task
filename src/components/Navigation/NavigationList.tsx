@@ -81,6 +81,11 @@ export function NavigationList({
     onReorder(newItems);
   }
 
+  const handleDelete = (itemId: string) => {
+    console.log('NavigationList handling delete for:', itemId);
+    onDelete(itemId);
+  };
+
   return (
     <div className="border-gray-border bg-gray-bg border rounded-lg w-full">
       <div className="divide-y divide-gray-200">
@@ -99,10 +104,11 @@ export function NavigationList({
               {items.map((item) => (
                 <li key={item.id}>
                   <SortableNavigationItem
+                    key={item.id}
                     item={item}
                     onEditStart={onEditStart}
                     onEditSubmit={onEditSubmit}
-                    onDelete={() => onDelete(item.id)}
+                    onDelete={handleDelete}
                     onAddSubItem={onAddSubItem}
                     isActive={item.id === activeItemId}
                     level={0}
