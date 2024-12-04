@@ -10,19 +10,19 @@ import { Input } from '../UI/Input';
 
 const schema = z.object({
   title: z.string({
-    required_error: "Title is required",
-    invalid_type_error: "Title must be text"
+    required_error: "Nazwa jest wymagana",
+    invalid_type_error: "Nazwa musi być tekstem"
   })
     .trim()
-    .min(1, { message: 'Title is required' })
-    .max(50, { message: 'Title cannot exceed 50 characters' }),
+    .min(1, { message: 'Nazwa jest wymagana' })
+    .max(50, { message: 'Nazwa nie może przekraczać 50 znaków' }),
   url: z.string({
-    invalid_type_error: "URL must be text"
+    invalid_type_error: "URL musi być tekstem"
   })
     .trim()
     .regex(
       /^https?:\/\/.+/,
-      { message: 'URL must start with http:// or https://' }
+      { message: 'URL musi zaczynać się od http:// lub https://' }
     )
     .refine(
       (value) => {
@@ -33,7 +33,7 @@ const schema = z.object({
           return false;
         }
       },
-      { message: 'Invalid URL format' }
+      { message: 'Nieprawidłowy format URL' }
     )
     .optional()
     .or(z.literal(''))
