@@ -17,11 +17,9 @@ const schema = z.object({
     .min(1, { message: 'Title is required' })
     .max(50, { message: 'Title cannot exceed 50 characters' }),
   url: z.string({
-    required_error: "URL is required",
     invalid_type_error: "URL must be text"
   })
     .trim()
-    .min(1, { message: 'URL is required' })
     .regex(
       /^https?:\/\/.+/,
       { message: 'URL must start with http:// or https://' }
@@ -37,6 +35,8 @@ const schema = z.object({
       },
       { message: 'Invalid URL format' }
     )
+    .optional()
+    .or(z.literal(''))
 });
 
 interface NavigationFormProps {

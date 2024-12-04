@@ -1,12 +1,11 @@
 export interface NavigationItem {
   id: string;
   title: string;
-  url: string;
-  parent?: string;
+  url?: string;
   children?: NavigationItem[];
 }
 
 export interface NavigationFormData {
   title: string;
-  url: string;
+  url?: string;
 }
