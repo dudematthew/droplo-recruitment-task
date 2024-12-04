@@ -23,17 +23,41 @@ export default function Home() {
     setIsFormVisible(false);
   };
 
-  const handleEdit = (data: NavigationFormData) => {
-    if (!editingItem) return;
-    
-    setItems(items.map(item => 
-      item.id === editingItem.id ? { ...item, ...data } : item
-    ));
+  const handleEditSubmit = (updatedItem: NavigationItem) => {
+    const updateItem = (items: NavigationItem[]): NavigationItem[] => {
+      return items.map(item => {
+        if (item.id === updatedItem.id) {
+          return updatedItem;
+        }
+        if (item.children) {
+          return {
+            ...item,
+            children: updateItem(item.children)
+          };
+        }
+        return item;
+      });
+    };
+
+    setItems(updateItem(items));
     setEditingItem(null);
   };
 
   const handleDelete = (id: string) => {
-    setItems(items.filter(item => item.id !== id));
+    const removeItem = (items: NavigationItem[]): NavigationItem[] => {
+      return items.map(item => {
+        if (item.children) {
+          const filteredChildren = removeItem(item.children);
+          return {
+            ...item,
+            children: filteredChildren
+          };
+        }
+        return item;
+      }).filter(item => item.id !== id);
+    };
+
+    setItems(removeItem(items));
   };
 
   const handleReorder = (newItems: NavigationItem[]) => {
@@ -68,19 +92,19 @@ export default function Home() {
   return (
     <div className="flex flex-col items-stretch gap-6 mx-auto p-6 max-w-6xl">
     
-      <div className='flex flex-col justify-center items-center gap-2 border-gray-border bg-white p-6 border rounded-lg w-full'>
-        <h1 className="font-bold">Menu is empty</h1>
-        <p className='text-gray-500 text-sm'>There are no links in this menu yet</p>
-        <Button 
-          onClick={() => setIsFormVisible(true)}
-          icon={<PlusCircleIcon className="w-5 h-5" />}
-          className='mt-4'
-        >
-          Add menu item
-        </Button>
-      </div>
-
-      
+      {items.length === 0 && (
+        <div className='flex flex-col justify-center items-center gap-2 border-gray-border bg-white p-6 border rounded-lg w-full'>
+          <h1 className="font-bold">Menu is empty</h1>
+          <p className='text-gray-500 text-sm'>There are no links in this menu yet</p>
+          <Button 
+            onClick={() => setIsFormVisible(true)}
+            icon={<PlusCircleIcon className="w-5 h-5" />}
+            className='mt-4'
+          >
+            Add menu item
+          </Button>
+        </div>
+      )}
 
       {isFormVisible && (
         <div className="w-full">
@@ -95,9 +119,11 @@ export default function Home() {
         <NavigationList
           items={items}
           onReorder={handleReorder}
-          onEdit={setEditingItem}
+          onEditStart={setEditingItem}
+          onEditSubmit={handleEditSubmit}
           onDelete={handleDelete}
           onAddSubItem={handleAddSubItem}
+          onAdd={handleAdd}
           activeItemId={editingItem?.id}
         />
       )}

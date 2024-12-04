@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { NavigationItem } from '@/types/navigation';
+import { NavigationFormData, NavigationItem } from '@/types/navigation';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -9,7 +9,8 @@ import { NavigationForm } from './NavigationForm';
 
 interface SortableNavigationItemProps {
   item: NavigationItem;
-  onEdit: () => void;
+  onEditStart: (item: NavigationItem) => void;
+  onEditSubmit: (item: NavigationItem) => void;
   onDelete: () => void;
   onAddSubItem: (parentId: string, newItem: Omit<NavigationItem, 'id'>) => void;
   isActive: boolean;
@@ -18,13 +19,15 @@ interface SortableNavigationItemProps {
 
 export function SortableNavigationItem({
   item,
-  onEdit,
+  onEditStart,
+  onEditSubmit,
   onDelete,
   onAddSubItem,
   isActive,
   level = 0,
 }: SortableNavigationItemProps) {
   const [isAddingSubItem, setIsAddingSubItem] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const {
     attributes,
@@ -44,12 +47,29 @@ export function SortableNavigationItem({
     setIsAddingSubItem(false);
   };
 
+  const handleEditSubmit = (formData: NavigationFormData) => {
+    onEditSubmit({ ...item, ...formData });
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div className="ml-6">
+        <NavigationForm
+          initialData={item}
+          onSubmit={handleEditSubmit}
+          onCancel={() => setIsEditing(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col">
       <div
         ref={setNodeRef}
         style={style}
-        className={`flex items-center justify-between w-full ${
+        className={`flex items-center justify-between pr-5 w-full ${
           isActive ? 'bg-gray-50' : 'bg-white'
         }`}
         {...attributes}
@@ -82,7 +102,10 @@ export function SortableNavigationItem({
             Delete
           </button>
           <button
-            onClick={onEdit}
+            onClick={() => {
+              setIsEditing(true);
+              onEditStart(item);
+            }}
             className="border-gray-200 hover:bg-gray-50 px-4 py-2 border-r text-gray-600 text-sm"
           >
             Edit
@@ -109,7 +132,8 @@ export function SortableNavigationItem({
         <SortableNavigationItem
           key={child.id}
           item={child}
-          onEdit={onEdit}
+          onEditStart={onEditStart}
+          onEditSubmit={onEditSubmit}
           onDelete={onDelete}
           onAddSubItem={onAddSubItem}
           isActive={isActive}
