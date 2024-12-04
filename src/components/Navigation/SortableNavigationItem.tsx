@@ -15,6 +15,7 @@ interface SortableNavigationItemProps {
   onAddSubItem: (parentId: string, newItem: Omit<NavigationItem, 'id'>) => void;
   isActive: boolean;
   level?: number;
+  isLastInLevel?: boolean;
 }
 
 export function SortableNavigationItem({
@@ -25,6 +26,7 @@ export function SortableNavigationItem({
   onAddSubItem,
   isActive,
   level = 0,
+  isLastInLevel = false,
 }: SortableNavigationItemProps) {
   const [isAddingSubItem, setIsAddingSubItem] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -58,7 +60,10 @@ export function SortableNavigationItem({
 
   if (isEditing) {
     return (
-      <div className="ml-6">
+      <div 
+        style={{ marginLeft: level > 0 ? `${level * 64}px` : undefined }}
+        className="flex flex-1"
+      >
         <NavigationForm
           initialData={item}
           onSubmit={handleEditSubmit}
@@ -72,18 +77,19 @@ export function SortableNavigationItem({
     <div className="flex flex-col">
       <div
         ref={setNodeRef}
-        style={style}
-        className={`flex items-center justify-between pr-5 w-full ${
+        style={{
+          ...style,
+          marginLeft: level > 0 ? `${level * 64}px` : undefined,
+        }}
+        className={`flex flex-1 items-center justify-between pr-5 border border-gray-200 ${
           isActive ? 'bg-gray-50' : 'bg-white'
-        }`}
+        } ${level > 0 && isLastInLevel ? 'rounded-bl-lg' : ''}`}
         {...attributes}
       >
         <div 
-          className="flex flex-1 items-center gap-2 px-6 py-4" 
-          style={{ 
-            paddingLeft: `${level * 24 + 24}px`,
-            backgroundColor: level > 0 ? 'rgb(249, 250, 251)' : undefined
-          }}
+          className={`flex flex-1 items-center gap-2 px-6 py-4 bg-white ${
+            level > 0 ? 'bg-gray-50' : ''
+          }`}
         >
           <button
             className="px-2 touch-none text-gray-500 hover:text-gray-600 cursor-move"
@@ -124,7 +130,7 @@ export function SortableNavigationItem({
       </div>
 
       {isAddingSubItem && (
-        <div className="ml-6">
+        <div style={{ marginLeft: `${(level + 1) * 64}px` }}>
           <NavigationForm
             onSubmit={handleAddSubItem}
             onCancel={() => setIsAddingSubItem(false)}
@@ -132,7 +138,7 @@ export function SortableNavigationItem({
         </div>
       )}
 
-      {item.children?.map((child) => (
+      {item.children?.map((child, index) => (
         <SortableNavigationItem
           key={child.id}
           item={child}
@@ -142,6 +148,7 @@ export function SortableNavigationItem({
           onAddSubItem={onAddSubItem}
           isActive={isActive}
           level={level + 1}
+          isLastInLevel={index === item.children!.length - 1}
         />
       ))}
     </div>

@@ -101,7 +101,7 @@ export function NavigationList({
             strategy={verticalListSortingStrategy}
           >
             <ul className="flex flex-col">
-              {items.map((item) => (
+              {items.map((item, index) => (
                 <li key={item.id}>
                   <SortableNavigationItem
                     key={item.id}
@@ -112,6 +112,7 @@ export function NavigationList({
                     onAddSubItem={onAddSubItem}
                     isActive={item.id === activeItemId}
                     level={0}
+                    isLastInLevel={index === items.length - 1}
                   />
                 </li>
               ))}
