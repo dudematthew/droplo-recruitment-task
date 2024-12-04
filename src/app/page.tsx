@@ -69,14 +69,14 @@ export default function Home() {
     <div className="flex flex-col items-stretch gap-6 mx-auto p-6 max-w-6xl">
     
       <div className='flex flex-col justify-center items-center gap-2 border-gray-border bg-white p-6 border rounded-lg w-full'>
-        <h1 className="font-bold">Menu jest puste</h1>
-        <p className='text-gray-500 text-sm'>W tym menu nie ma jeszcze żadnych linków</p>
+        <h1 className="font-bold">Menu is empty</h1>
+        <p className='text-gray-500 text-sm'>There are no links in this menu yet</p>
         <Button 
           onClick={() => setIsFormVisible(true)}
           icon={<PlusCircleIcon className="w-5 h-5" />}
           className='mt-4'
         >
-          Dodaj pozycję menu
+          Add menu item
         </Button>
       </div>
 

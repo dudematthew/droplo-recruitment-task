@@ -1,5 +1,3 @@
-
-
 import { SortableNavigationItem } from '@/components/Navigation/SortableNavigationItem';
 import { NavigationItem } from '@/types/navigation';
 import {
@@ -35,47 +33,98 @@ export function NavigationList({
     })
   );
 
+  // Helper function to flatten structure
+  const flattenItems = (items: NavigationItem[]): NavigationItem[] => {
+    return items.reduce<NavigationItem[]>((flat, item) => {
+      const flatItem = { ...item };
+      const children = item.children || [];
+      return [...flat, flatItem, ...flattenItems(children)];
+    }, []);
+  };
+
+  // Helper function to reconstruct hierarchy
+  const reconstructHierarchy = (flatItems: NavigationItem[]): NavigationItem[] => {
+    const itemMap = new Map<string, NavigationItem>();
+    const rootItems: NavigationItem[] = [];
+
+    // First create a map of all items
+    flatItems.forEach(item => {
+      itemMap.set(item.id, { ...item, children: [] });
+    });
+
+    // Then reconstruct the hierarchy
+    flatItems.forEach(item => {
+      const parent = item.parent ? itemMap.get(item.parent) : null;
+      if (parent) {
+        parent.children = parent.children || [];
+        parent.children.push(itemMap.get(item.id)!);
+      } else {
+        rootItems.push(itemMap.get(item.id)!);
+      }
+    });
+
+    return rootItems;
+  };
+
   function handleDragEnd(event: any) {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      const oldIndex = items.findIndex((item) => item.id === active.id);
-      const newIndex = items.findIndex((item) => item.id === over.id);
-      const newItems = arrayMove(items, oldIndex, newIndex);
+      // Flatten the structure before changing order
+      const flatItems = flattenItems(items);
+      
+      const oldIndex = flatItems.findIndex((item) => item.id === active.id);
+      const newIndex = flatItems.findIndex((item) => item.id === over.id);
+      
+      const newFlatItems = arrayMove(flatItems, oldIndex, newIndex);
+      
+      // Reconstruct the hierarchy after changing order
+      const newItems = reconstructHierarchy(newFlatItems);
+      
       onReorder(newItems);
     }
   }
 
+  // Flatten the structure for SortableContext
+  const flattenedItems = flattenItems(items);
+
   return (
-    <div className="border-gray-border bg-gray-50 border rounded-lg w-full">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          <ul className="flex flex-col divide-y divide-gray-200">
-            {items.map((item) => (
-              <li key={item.id}>
-                <SortableNavigationItem
-                  item={item}
-                  onEdit={() => onEdit(item)}
-                  onDelete={() => onDelete(item.id)}
-                  onAddSubItem={onAddSubItem}
-                  isActive={item.id === activeItemId}
-                  level={0}
-                />
-              </li>
-            ))}
-          </ul>
-        </SortableContext>
-      </DndContext>
+    <div className="border-gray-border border rounded-lg w-full">
+      <div className="bg-white">
+        <DndContext
+          id="navigation-list"
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext 
+            id="navigation-items"
+            items={flattenedItems} 
+            strategy={verticalListSortingStrategy}
+          >
+            <ul className="flex flex-col divide-y divide-gray-200">
+              {items.map((item) => (
+                <li key={item.id}>
+                  <SortableNavigationItem
+                    item={item}
+                    onEdit={() => onEdit(item)}
+                    onDelete={() => onDelete(item.id)}
+                    onAddSubItem={onAddSubItem}
+                    isActive={item.id === activeItemId}
+                    level={0}
+                  />
+                </li>
+              ))}
+            </ul>
+          </SortableContext>
+        </DndContext>
+      </div>
       
-      <div className="flex justify-start border-gray-200 bg-gray-50 p-6 border-t">
+      <div className="flex justify-start border-gray-200 bg-gray-bg p-6 border-t">
         <Button 
           variant="secondary"
         >
-          Dodaj pozycję menu
+          Add menu item
         </Button>
       </div>
     </div>

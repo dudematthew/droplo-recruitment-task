@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { NavigationFormData } from '@/types/navigation';
@@ -9,14 +9,22 @@ import { Button } from '../UI/Button';
 import { Input } from '../UI/Input';
 
 const schema = z.object({
-  title: z.string()
-    .min(1, { message: 'Tytuł jest wymagany' })
-    .max(50, { message: 'Tytuł może mieć maksymalnie 50 znaków' }),
-  url: z.string()
-    .min(1, { message: 'URL jest wymagany' })
+  title: z.string({
+    required_error: "Title is required",
+    invalid_type_error: "Title must be text"
+  })
+    .trim()
+    .min(1, { message: 'Title is required' })
+    .max(50, { message: 'Title cannot exceed 50 characters' }),
+  url: z.string({
+    required_error: "URL is required",
+    invalid_type_error: "URL must be text"
+  })
+    .trim()
+    .min(1, { message: 'URL is required' })
     .regex(
       /^https?:\/\/.+/,
-      { message: 'URL musi zaczynać się od http:// lub https://' }
+      { message: 'URL must start with http:// or https://' }
     )
     .refine(
       (value) => {
@@ -27,7 +35,7 @@ const schema = z.object({
           return false;
         }
       },
-      { message: 'Nieprawidłowy format URL' }
+      { message: 'Invalid URL format' }
     )
 });
 
@@ -39,9 +47,9 @@ interface NavigationFormProps {
 
 export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFormProps) {
   const {
-    register,
+    control,
     handleSubmit,
-    formState: { errors, isSubmitting, touchedFields },
+    formState: { errors, isSubmitting, touchedFields, isDirty },
   } = useForm<NavigationFormData>({
     resolver: zodResolver(schema),
     defaultValues: initialData || {
@@ -49,25 +57,42 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
       url: ''
     },
     mode: 'onTouched',
-    delayError: 500,
   });
 
   return (
     <div className="flex border-gray-border bg-white border rounded-lg w-full">
       <div className="flex flex-col justify-center gap-6 p-6 pr-0 w-full">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <Input
-            label="Nazwa"
-            placeholder="np. Promocje"
-            {...register('title')}
-            error={touchedFields.title ? errors.title?.message : undefined}
+        <form 
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6"
+          noValidate
+        >
+          <Controller
+            name="title"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="Name"
+                placeholder="e.g. Products"
+                type="text"
+                {...field}
+                error={isDirty && touchedFields.title ? errors.title?.message : undefined}
+              />
+            )}
           />
           
-          <Input
-            label="Link"
-            placeholder="Wklej lub wyszukaj"
-            {...register('url')}
-            error={touchedFields.url ? errors.url?.message : undefined}
+          <Controller
+            name="url"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="URL"
+                placeholder="Paste or search"
+                type="url"
+                {...field}
+                error={isDirty && touchedFields.url ? errors.url?.message : undefined}
+              />
+            )}
           />
 
           <div className="flex justify-start gap-3 pt-2">
@@ -77,7 +102,7 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
                 variant="secondary"
                 onClick={onCancel}
               >
-                Anuluj
+                Cancel
               </Button>
             )}
             <Button 
@@ -85,7 +110,7 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
               variant="outline"
               disabled={isSubmitting}
             >
-              {initialData ? 'Zapisz zmiany' : 'Dodaj do menu'}
+              {initialData ? 'Save changes' : 'Add to menu'}
             </Button>
           </div>
         </form>

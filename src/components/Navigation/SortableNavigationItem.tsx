@@ -49,12 +49,19 @@ export function SortableNavigationItem({
       <div
         ref={setNodeRef}
         style={style}
-        className={`flex items-center justify-between w-full bg-white py-4 px-6 ${
+        className={`flex items-center justify-between w-full bg-white ${
           isActive ? 'bg-gray-50' : ''
         }`}
         {...attributes}
       >
-        <div className="flex flex-1 items-center gap-2" style={{ paddingLeft: `${level * 24}px` }}>
+        <div 
+          className="flex flex-1 items-center gap-2 px-6 py-4" 
+          style={{ 
+            paddingLeft: `${level * 24 + 24}px`,
+            marginLeft: level > 0 ? '0' : undefined,
+            backgroundColor: level > 0 ? 'var(--gray-bg)' : undefined
+          }}
+        >
           <button
             className="px-2 touch-none text-gray-500 hover:text-gray-600 cursor-move"
             {...listeners}
@@ -73,25 +80,25 @@ export function SortableNavigationItem({
             onClick={onDelete}
             className="border-gray-200 hover:bg-gray-50 px-4 py-2 border-r text-gray-600 text-sm"
           >
-            Usuń
+            Delete
           </button>
           <button
             onClick={onEdit}
             className="border-gray-200 hover:bg-gray-50 px-4 py-2 border-r text-gray-600 text-sm"
           >
-            Edytuj
+            Edit
           </button>
           <button
             onClick={() => setIsAddingSubItem(true)}
             className="flex items-center gap-2 hover:bg-gray-50 px-4 py-2 text-gray-600 text-sm"
           >
-            Dodaj pozycję menu
+            Add menu item
           </button>
         </div>
       </div>
 
       {isAddingSubItem && (
-        <div className="ml-[24px]">
+        <div className="bg-gray-bg ml-6">
           <NavigationForm
             onSubmit={handleAddSubItem}
             onCancel={() => setIsAddingSubItem(false)}
