@@ -49,8 +49,8 @@ export function SortableNavigationItem({
       <div
         ref={setNodeRef}
         style={style}
-        className={`flex items-center justify-between w-full bg-white ${
-          isActive ? 'bg-gray-50' : ''
+        className={`flex items-center justify-between w-full ${
+          isActive ? 'bg-gray-50' : 'bg-white'
         }`}
         {...attributes}
       >
@@ -58,8 +58,7 @@ export function SortableNavigationItem({
           className="flex flex-1 items-center gap-2 px-6 py-4" 
           style={{ 
             paddingLeft: `${level * 24 + 24}px`,
-            marginLeft: level > 0 ? '0' : undefined,
-            backgroundColor: level > 0 ? 'var(--gray-bg)' : undefined
+            backgroundColor: level > 0 ? 'rgb(249, 250, 251)' : undefined
           }}
         >
           <button
@@ -98,7 +97,7 @@ export function SortableNavigationItem({
       </div>
 
       {isAddingSubItem && (
-        <div className="bg-gray-bg ml-6">
+        <div className="ml-6">
           <NavigationForm
             onSubmit={handleAddSubItem}
             onCancel={() => setIsAddingSubItem(false)}

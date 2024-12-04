@@ -34,11 +34,11 @@ export function NavigationList({
   );
 
   // Helper function to flatten structure
-  const flattenItems = (items: NavigationItem[]): NavigationItem[] => {
+  const flattenItems = (items: NavigationItem[], parentId?: string): NavigationItem[] => {
     return items.reduce<NavigationItem[]>((flat, item) => {
-      const flatItem = { ...item };
+      const flatItem = { ...item, parent: parentId };
       const children = item.children || [];
-      return [...flat, flatItem, ...flattenItems(children)];
+      return [...flat, flatItem, ...flattenItems(children, item.id)];
     }, []);
   };
 
@@ -49,15 +49,18 @@ export function NavigationList({
 
     // First create a map of all items
     flatItems.forEach(item => {
-      itemMap.set(item.id, { ...item, children: [] });
+      const { parent, children, ...itemWithoutParent } = item;
+      itemMap.set(item.id, { ...itemWithoutParent, children: [] });
     });
 
     // Then reconstruct the hierarchy
     flatItems.forEach(item => {
-      const parent = item.parent ? itemMap.get(item.parent) : null;
-      if (parent) {
-        parent.children = parent.children || [];
-        parent.children.push(itemMap.get(item.id)!);
+      if (item.parent) {
+        const parent = itemMap.get(item.parent);
+        if (parent) {
+          parent.children = parent.children || [];
+          parent.children.push(itemMap.get(item.id)!);
+        }
       } else {
         rootItems.push(itemMap.get(item.id)!);
       }
@@ -89,8 +92,8 @@ export function NavigationList({
   const flattenedItems = flattenItems(items);
 
   return (
-    <div className="border-gray-border border rounded-lg w-full">
-      <div className="bg-white">
+    <div className="border-gray-border bg-gray-bg border rounded-lg w-full">
+      <div className="divide-y divide-gray-200">
         <DndContext
           id="navigation-list"
           sensors={sensors}
@@ -102,7 +105,7 @@ export function NavigationList({
             items={flattenedItems} 
             strategy={verticalListSortingStrategy}
           >
-            <ul className="flex flex-col divide-y divide-gray-200">
+            <ul className="flex flex-col">
               {items.map((item) => (
                 <li key={item.id}>
                   <SortableNavigationItem
@@ -120,7 +123,7 @@ export function NavigationList({
         </DndContext>
       </div>
       
-      <div className="flex justify-start border-gray-200 bg-gray-bg p-6 border-t">
+      <div className="flex justify-start border-gray-200 p-6 border-t">
         <Button 
           variant="secondary"
         >
