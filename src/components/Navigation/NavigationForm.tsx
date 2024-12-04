@@ -49,14 +49,15 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting, touchedFields, isDirty },
+    formState: { errors, isSubmitting },
   } = useForm<NavigationFormData>({
     resolver: zodResolver(schema),
     defaultValues: initialData || {
       title: '',
       url: ''
     },
-    mode: 'onTouched',
+    mode: 'onChange',
+    reValidateMode: 'onChange'
   });
 
   return (
@@ -76,7 +77,7 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
                 placeholder="np. Promocje"
                 type="text"
                 {...field}
-                error={isDirty && touchedFields.title ? errors.title?.message : undefined}
+                error={errors.title?.message}
               />
             )}
           />
@@ -90,7 +91,7 @@ export function NavigationForm({ onSubmit, initialData, onCancel }: NavigationFo
                 placeholder="Wklej lub wyszukaj"
                 type="url"
                 {...field}
-                error={isDirty && touchedFields.url ? errors.url?.message : undefined}
+                error={errors.url?.message}
               />
             )}
           />

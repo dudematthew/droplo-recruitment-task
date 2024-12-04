@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { FEATURES } from '@/config/features';
 import { NavigationFormData, NavigationItem } from '@/types/navigation';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -56,6 +57,10 @@ export function SortableNavigationItem({
 
   const handleDeleteClick = () => {
     onDelete(item.id);
+  };
+
+  const handleAddSubItemClick = () => {
+    setIsAddingSubItem(true);
   };
 
   if (isEditing) {
@@ -121,7 +126,7 @@ export function SortableNavigationItem({
             Edytuj
           </button>
           <button
-            onClick={() => setIsAddingSubItem(true)}
+            onClick={handleAddSubItemClick}
             className="flex items-center gap-2 hover:bg-gray-50 px-4 py-2 text-gray-600 text-sm"
           >
             Dodaj pozycję menu
@@ -131,10 +136,22 @@ export function SortableNavigationItem({
 
       {isAddingSubItem && (
         <div style={{ marginLeft: `${(level + 1) * 64}px` }}>
-          <NavigationForm
-            onSubmit={handleAddSubItem}
-            onCancel={() => setIsAddingSubItem(false)}
-          />
+          {level >= FEATURES.MAX_NESTING_LEVEL && FEATURES.SHOW_EASTER_EGGS ? (
+            <div className="flex items-center gap-3 border-purple-200 bg-purple-50 p-4 border rounded-lg text-purple-700">
+              <span className="text-2xl">🐰</span>
+              <div className="flex flex-col">
+                <p className="font-medium">Wow, ale głęboko!</p>
+                <p className="text-purple-600 text-sm">
+                  Znalazłeś/aś sekretnego króliczka za dokopanie się do piątego poziomu
+                </p>
+              </div>
+            </div>
+          ) : (
+            <NavigationForm
+              onSubmit={handleAddSubItem}
+              onCancel={() => setIsAddingSubItem(false)}
+            />
+          )}
         </div>
       )}
 

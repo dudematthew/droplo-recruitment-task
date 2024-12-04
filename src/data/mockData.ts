@@ -3,65 +3,50 @@ import { NavigationItem } from "@/types/navigation";
 export const initialNavigationItems: NavigationItem[] = [
   {
     id: "1",
-    title: "Homepage",
+    title: "Strona główna",
     url: "https://rc32141.redcart.pl",
     children: [
       {
         id: "1-1",
-        title: "Featured",
+        title: "Polecane",
         url: "https://rc32141.redcart.pl/featured",
         children: [
           {
             id: "1-1-1",
-            title: "Best Sellers",
+            title: "Bestsellery",
             url: "https://rc32141.redcart.pl/featured/best-sellers",
-          },
-          {
-            id: "1-1-2",
-            title: "Trending",
-            url: "https://rc32141.redcart.pl/featured/trending",
-          },
-        ],
-      },
-      {
-        id: "1-2",
-        title: "New Arrivals",
-        url: "https://rc32141.redcart.pl/new",
-      },
-    ],
-  },
-  {
-    id: "2",
-    title: "Products",
-    url: "https://rc32141.redcart.pl/products",
-    children: [
-      {
-        id: "2-1",
-        title: "Categories",
-        url: "https://rc32141.redcart.pl/products/categories",
-        children: [
-          {
-            id: "2-1-1",
-            title: "Electronics",
-            url: "https://rc32141.redcart.pl/products/categories/electronics",
             children: [
               {
-                id: "2-1-1-1",
-                title: "Smartphones",
-                url: "https://rc32141.redcart.pl/products/categories/electronics/smartphones",
-              },
-              {
-                id: "2-1-1-2",
-                title: "Laptops",
-                url: "https://rc32141.redcart.pl/products/categories/electronics/laptops",
+                id: "1-1-1-1",
+                title: "Top 10",
+                url: "https://rc32141.redcart.pl/featured/best-sellers/top-10",
+                children: [
+                  {
+                    id: "1-1-1-1-1",
+                    title: "Ten miesiąc",
+                    url: "https://rc32141.redcart.pl/featured/best-sellers/top-10/this-month",
+                  },
+                ],
               },
             ],
           },
         ],
       },
+    ],
+  },
+  {
+    id: "2",
+    title: "Produkty",
+    url: "https://rc32141.redcart.pl/products",
+    children: [
+      {
+        id: "2-1",
+        title: "Kategorie",
+        url: "https://rc32141.redcart.pl/products/categories",
+      },
       {
         id: "2-2",
-        title: "Brands",
+        title: "Marki",
         url: "https://rc32141.redcart.pl/products/brands",
       },
     ],

@@ -5,12 +5,15 @@ import { useState } from 'react';
 import { NavigationForm } from '@/components/Navigation/NavigationForm';
 import { NavigationList } from '@/components/Navigation/NavigationList';
 import { Button } from '@/components/UI/Button';
+import { FEATURES } from '@/config/features';
 import { initialNavigationItems } from '@/data/mockData';
 import { NavigationFormData, NavigationItem } from '@/types/navigation';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
 export default function Home() {
-  const [items, setItems] = useState<NavigationItem[]>(initialNavigationItems);
+  const [items, setItems] = useState<NavigationItem[]>(
+    FEATURES.USE_MOCK_DATA ? initialNavigationItems : []
+  );
   const [editingItem, setEditingItem] = useState<NavigationItem | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
