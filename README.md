@@ -62,6 +62,38 @@ npm coverage    # Generate coverage report
 
 Open http://localhost:3000 with your browser to see the result.
 
+Testing
+-------
+
+The project uses Vitest with React Testing Library for testing. Tests are located in `__tests__` directories next to the components they test.
+
+### Running Tests
+
+```bash
+npm test        # Run tests in watch mode
+npm test:ui     # Open Vitest UI for debugging
+npm coverage    # Generate test coverage report
+```
+
+### Test Structure
+
+- Unit tests for components
+- Form validation tests
+- User interaction tests
+- Accessibility tests (labels, ARIA)
+
+### Example Test
+
+```typescript
+it('validates form input', async () => {
+  render(<NavigationForm onSubmit={() => {}} />);
+  
+  fireEvent.click(screen.getByText('Dodaj'));
+  
+  expect(await screen.findByText('Nazwa jest wymagana')).toBeInTheDocument();
+});
+```
+
 Development
 -----------
 
