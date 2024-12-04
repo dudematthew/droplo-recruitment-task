@@ -1,26 +1,22 @@
-import { useState } from 'react';
+
+
+import { SortableNavigationItem } from '@/components/Navigation/SortableNavigationItem';
+import { NavigationItem } from '@/types/navigation';
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
+    closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors
 } from '@dnd-kit/core';
 import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
+    arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy
 } from '@dnd-kit/sortable';
-import { NavigationItem } from '@/types/navigation';
-import { SortableNavigationItem } from '@/components/Navigation/SortableNavigationItem';
+
+import { Button } from '../UI/Button';
 
 interface NavigationListProps {
   items: NavigationItem[];
   onReorder: (items: NavigationItem[]) => void;
   onEdit: (item: NavigationItem) => void;
   onDelete: (id: string) => void;
+  onAddSubItem: (parentId: string, newItem: Omit<NavigationItem, 'id'>) => void;
   activeItemId?: string;
 }
 
@@ -29,6 +25,7 @@ export function NavigationList({
   onReorder,
   onEdit,
   onDelete,
+  onAddSubItem,
   activeItemId,
 }: NavigationListProps) {
   const sensors = useSensors(
@@ -50,24 +47,37 @@ export function NavigationList({
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        <ul className="flex flex-col gap-2">
-          {items.map((item) => (
-            <SortableNavigationItem
-              key={item.id}
-              item={item}
-              onEdit={() => onEdit(item)}
-              onDelete={() => onDelete(item.id)}
-              isActive={item.id === activeItemId}
-            />
-          ))}
-        </ul>
-      </SortableContext>
-    </DndContext>
+    <div className="border-gray-border bg-gray-50 border rounded-lg w-full">
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={items} strategy={verticalListSortingStrategy}>
+          <ul className="flex flex-col divide-y divide-gray-200">
+            {items.map((item) => (
+              <li key={item.id}>
+                <SortableNavigationItem
+                  item={item}
+                  onEdit={() => onEdit(item)}
+                  onDelete={() => onDelete(item.id)}
+                  onAddSubItem={onAddSubItem}
+                  isActive={item.id === activeItemId}
+                  level={0}
+                />
+              </li>
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
+      
+      <div className="flex justify-start border-gray-200 bg-gray-50 p-6 border-t">
+        <Button 
+          variant="secondary"
+        >
+          Dodaj pozycję menu
+        </Button>
+      </div>
+    </div>
   );
 } 

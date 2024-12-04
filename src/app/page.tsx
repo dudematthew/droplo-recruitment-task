@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { NavigationList } from '@/components/Navigation/NavigationList';
+
 import { NavigationForm } from '@/components/Navigation/NavigationForm';
-import { NavigationItem, NavigationFormData } from '@/types/navigation';
+import { NavigationList } from '@/components/Navigation/NavigationList';
 import { Button } from '@/components/UI/Button';
 import { initialNavigationItems } from '@/data/mockData';
+import { NavigationFormData, NavigationItem } from '@/types/navigation';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
 export default function Home() {
   const [items, setItems] = useState<NavigationItem[]>(initialNavigationItems);
@@ -38,35 +40,67 @@ export default function Home() {
     setItems(newItems);
   };
 
+  const handleAddSubItem = (parentId: string, newItem: Omit<NavigationItem, 'id'>) => {
+    const addSubItem = (items: NavigationItem[]): NavigationItem[] => {
+      return items.map(item => {
+        if (item.id === parentId) {
+          return {
+            ...item,
+            children: [
+              ...(item.children || []),
+              { ...newItem, id: crypto.randomUUID() }
+            ]
+          };
+        }
+        if (item.children) {
+          return {
+            ...item,
+            children: addSubItem(item.children)
+          };
+        }
+        return item;
+      });
+    };
+
+    setItems(addSubItem(items));
+  };
+
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Zarządzanie nawigacją</h1>
-        <Button onClick={() => setIsFormVisible(true)}>
-          Dodaj element
+    <div className="flex flex-col items-stretch gap-6 mx-auto p-6 max-w-6xl">
+    
+      <div className='flex flex-col justify-center items-center gap-2 border-gray-border bg-white p-6 border rounded-lg w-full'>
+        <h1 className="font-bold">Menu jest puste</h1>
+        <p className='text-gray-500 text-sm'>W tym menu nie ma jeszcze żadnych linków</p>
+        <Button 
+          onClick={() => setIsFormVisible(true)}
+          icon={<PlusCircleIcon className="w-5 h-5" />}
+          className='mt-4'
+        >
+          Dodaj pozycję menu
         </Button>
       </div>
 
-      {(isFormVisible || editingItem) && (
-        <div className="mb-6">
+      
+
+      {isFormVisible && (
+        <div className="w-full">
           <NavigationForm
-            onSubmit={editingItem ? handleEdit : handleAdd}
-            initialData={editingItem || undefined}
-            onCancel={() => {
-              setIsFormVisible(false);
-              setEditingItem(null);
-            }}
+            onSubmit={handleAdd}
+            onCancel={() => setIsFormVisible(false)}
           />
         </div>
       )}
 
-      <NavigationList
-        items={items}
-        onReorder={handleReorder}
-        onEdit={setEditingItem}
-        onDelete={handleDelete}
-        activeItemId={editingItem?.id}
-      />
+      {items.length > 0 && (
+        <NavigationList
+          items={items}
+          onReorder={handleReorder}
+          onEdit={setEditingItem}
+          onDelete={handleDelete}
+          onAddSubItem={handleAddSubItem}
+          activeItemId={editingItem?.id}
+        />
+      )}
     </div>
   );
 }
