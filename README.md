@@ -44,21 +44,27 @@ Getting Started
 
 1\. Install dependencies:
 
-npm install
+```npm install```
 
 -   Run the development server:
 
-npm dev
+```bash 
+npm dev 
+```
 
 -   Build for production:
 
-npm build
+```bash 
+npm build 
+```
 
 -   Testing:
 
+```bash
 npm test        # Run tests in watch mode
 npm test:ui     # Run tests with UI
 npm coverage    # Generate coverage report
+``` 
 
 Open http://localhost:3000 with your browser to see the result.
 
